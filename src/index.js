@@ -4,7 +4,7 @@ const { sendNotification } = require('./notifier');
 
 async function run() {
   
-  const core = await import('@actions/core');
+  const core = require('@actions/core/lib/core.js');
   const { getInput, setFailed } = core;
 
   try {

@@ -1,4 +1,4 @@
-const core = require('@actions/core');
+const core = require('@actions/core/lib/core.js');
 
 async function sendNotification(target, routeConfig, fallbackContact, reason) {
   const destination = routeConfig?.slack_channel || routeConfig?.email || fallbackContact;
