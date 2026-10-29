@@ -18,7 +18,7 @@ function getAuthorForPath(targetPath) {
   }
 }
 
-function resolveCulprit(rule, failedStepName, errorLogs) {
+export function resolveCulprit(rule, failedStepName, errorLogs) {
   // If rule specifies custom blame source files (e.g., package.json for a Docker build failure)
   if (rule && rule.blame_source_files && rule.blame_source_files.length > 0) {
     console.log(`[BlameEngine] Rule matched. Overriding blame target to source files:`, rule.blame_source_files);
@@ -34,5 +34,3 @@ function resolveCulprit(rule, failedStepName, errorLogs) {
   // Default behavior: Blame the general workspace or last commit
   return getAuthorForPath('.');
 }
-
-module.exports = { resolveCulprit };

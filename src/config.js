@@ -2,7 +2,7 @@ const fs = require('fs');
 const path = require('path');
 const yaml = require('js-yaml');
 
-function loadRules(configPath) {
+export function loadRules(configPath) {
   const resolvedPath = path.resolve(process.cwd(), configPath);
   if (!fs.existsSync(resolvedPath)) {
     // Return default empty rules if config doesn't exist yet
@@ -25,5 +25,3 @@ function loadRules(configPath) {
     return { default_fallback_channel: '#pipeline-alerts', ignore_authors: ['dependabot[bot]', 'github-actions[bot]'], rules: [] };
   }
 }
-
-module.exports = { loadRules };

@@ -1,6 +1,6 @@
-const core = require('@actions/core/lib/core.js');
+import * as core from '@actions/core';
 
-async function sendNotification(target, routeConfig, fallbackContact, reason) {
+export async function sendNotification(target, routeConfig, fallbackContact, reason) {
   const destination = routeConfig?.slack_channel || routeConfig?.email || fallbackContact;
   
   const payload = {
@@ -27,5 +27,3 @@ async function sendNotification(target, routeConfig, fallbackContact, reason) {
     console.log('[Notifier] (Dry-run mode: No SLACK_WEBHOOK_URL provided, alert printed to console only)');
   }
 }
-
-module.exports = { sendNotification };
