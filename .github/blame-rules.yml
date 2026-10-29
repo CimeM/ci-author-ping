@@ -1,0 +1,19 @@
+default_fallback_channel: "#pipeline-alerts"
+ignore_authors:
+  - "dependabot[bot]"
+  - "github-actions[bot]"
+
+rules:
+  - name: "Infrastructure & Network Errors"
+    match_error: "(Temporary failure in name resolution|Docker daemon offline|Connection refused)"
+    route_to:
+      slack_channel: "#devops-incidents"
+      email: "devops@company.com"
+
+  - name: "Docker Build Failure Tracking"
+    match_step: "Build Docker Image"
+    blame_source_files:
+      - "package.json"
+      - "src/index.js"
+    route_to:
+      mode: "dynamic_code_author"

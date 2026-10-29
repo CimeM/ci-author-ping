@@ -1,0 +1,17 @@
+name: 'AuthorPing'
+description: 'Smart CI failure router using git blame and custom rules mapping.'
+inputs:
+  slack_webhook_url:
+    description: 'Slack Webhook URL for incoming alerts'
+    required: false
+  rules_file:
+    description: 'Path to custom rules configuration file'
+    required: false
+    default: '.github/blame-rules.yml'
+  fallback_contact:
+    description: 'Default fallback email or Slack channel'
+    required: true
+    default: '#pipeline-alerts'
+runs:
+  using: 'node20'
+  main: 'src/index.js'

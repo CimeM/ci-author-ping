@@ -1,0 +1,49 @@
+name: Test AuthorPing Pipeline
+
+on:
+  workflow_dispatch: # Allows you to manually trigger this test from the GitHub Actions tab
+  push:
+    branches:
+      - main
+      - test-ci # Optional: trigger on a test branch
+
+jobs:
+  # Scenario 1: Test Docker Build Failure & Source File Blame Routing
+  test-docker-failure:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout Repository
+        uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683 # v4.2.2
+
+      - name: Build Docker Image
+        run: |
+          echo "Simulating a docker build failure..."
+          echo "Error: failed to solve: process '/bin/sh -c npm run build' did not complete successfully"
+          exit 1
+
+      - name: Run AuthorPing (On Failure)
+        if: failure()
+        uses: ./
+        with:
+          fallback_contact: '#pipeline-alerts'
+          rules_file: '.github/blame-rules.yml'
+
+  # Scenario 2: Test Infrastructure / Network Error Regex Routing
+  test-infra-failure:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout Repository
+        uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683 # v4.2.2
+
+      - name: Connect to External Registry
+        run: |
+          echo "Attempting to pull base image..."
+          echo "Temporary failure in name resolution while connecting to registry.docker.io"
+          exit 1
+
+      - name: Run AuthorPing (On Failure)
+        if: failure()
+        uses: ./
+        with:
+          fallback_contact: '#devops-escalations'
+          rules_file: '.github/blame-rules.yml'

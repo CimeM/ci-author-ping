@@ -1,0 +1,15 @@
+version: 2
+updates:
+  # Keep npm dependencies fresh
+  - package-ecosystem: "npm"
+    directory: "/"
+    schedule:
+      interval: "weekly"
+    open-pull-requests-limit: 10
+
+  # Keep GitHub Actions (checkout, setup-node, etc.) pinned versions fresh
+  - package-ecosystem: "github-actions"
+    directory: "/"
+    schedule:
+      interval: "weekly"
+    open-pull-requests-limit: 10
