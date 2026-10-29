@@ -1,53 +1,55 @@
 const { sendNotification } = require('../src/notifier');
-const fetch = require('node-fetch');
+const core = require('@actions/core');
 
-// Mock the fetch module so tests don't hit the network
-jest.mock('node-fetch', () => jest.fn());
-
-// @actions/core v3 is ESM-only, so it can't be resolved through CJS require in Jest.
-// Provide a virtual mock that reads inputs from the environment, like the real one.
-jest.mock(
-  '@actions/core',
-  () => ({
-    getInput: jest.fn((name) => process.env[`INPUT_${name.replace(/ /g, '_').toUpperCase()}`] || ''),
-    setFailed: jest.fn(),
-  }),
-  { virtual: true }
-);
+// Mock external modules
+jest.mock('@actions/core', () => ({
+  getInput: jest.fn()
+}));
 
 describe('Notifier (src/notifier.js)', () => {
-  afterEach(() => {
+  let consoleLogSpy;
+
+  beforeEach(() => {
     jest.clearAllMocks();
-    delete process.env.INPUT_SLACK_WEBHOOK_URL;
+    consoleLogSpy = jest.spyOn(console, 'log').mockImplementation(() => {});
+    // Mock global fetch for testing
+    global.fetch = jest.fn();
+  });
+
+  afterEach(() => {
+    consoleLogSpy.mockRestore();
+    delete global.fetch;
   });
 
   it('should log a dry-run alert when no Slack webhook URL is configured', async () => {
-    delete process.env.INPUT_SLACK_WEBHOOK_URL;
+    core.getInput.mockReturnValue(''); // No webhook URL provided
 
-    await sendNotification(
-      { name: 'Jane Dev', email: 'jane@company.com' },
-      { slack_channel: '#dev-team' },
-      '#pipeline-alerts',
-      'Docker Build Failure Tracking'
+    const target = { name: 'Alice', email: 'alice@company.com' };
+    await sendNotification(target, null, '#pipeline-alerts', 'Test Failure');
+
+    expect(core.getInput).toHaveBeenCalledWith('slack_webhook_url');
+    expect(consoleLogSpy).toHaveBeenCalledWith(
+      expect.stringContaining('(Dry-run mode: No SLACK_WEBHOOK_URL provided')
     );
-
-    expect(fetch).not.toHaveBeenCalled();
+    expect(global.fetch).not.toHaveBeenCalled();
   });
 
   it('should dispatch the alert payload to the Slack webhook when configured', async () => {
-    process.env.INPUT_SLACK_WEBHOOK_URL = 'https://hooks.slack.com/services/T000/B000/XXXX';
-    fetch.mockResolvedValue({ ok: true });
+    core.getInput.mockReturnValue('https://hooks.slack.com/services/mock/webhook');
+    global.fetch.mockResolvedValue({ ok: true });
 
-    await sendNotification(
-      { name: 'Jane Dev', email: 'jane@company.com' },
-      { slack_channel: '#dev-team' },
-      '#pipeline-alerts',
-      'Docker Build Failure Tracking'
+    const target = { name: 'Bob', email: 'bob@company.com' };
+    await sendNotification(target, null, '#pipeline-alerts', 'Docker Build Failure');
+
+    expect(global.fetch).toHaveBeenCalledWith(
+      'https://hooks.slack.com/services/mock/webhook',
+      expect.objectContaining({
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' }
+      })
     );
-
-    expect(fetch).toHaveBeenCalledWith(
-      'https://hooks.slack.com/services/T000/B000/XXXX',
-      expect.objectContaining({ method: 'POST' })
+    expect(consoleLogSpy).toHaveBeenCalledWith(
+      expect.stringContaining('Successfully sent notification to Slack!')
     );
   });
 });

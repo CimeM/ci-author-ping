@@ -3,10 +3,11 @@ const { resolveCulprit } = require('./git-parser');
 const { sendNotification } = require('./notifier');
 
 async function run() {
-  try {
-    const core = await import('@actions/core');
-    const { getInput, setFailed } = core;
+  
+  const core = await import('@actions/core');
+  const { getInput, setFailed } = core;
 
+  try {
     const rulesFile = getInput('rules_file') || '.github/blame-rules.yml';
     const fallbackContact = getInput('fallback_contact') || '#pipeline-alerts';
     
