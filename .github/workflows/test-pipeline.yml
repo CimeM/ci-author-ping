@@ -1,14 +1,13 @@
 name: Test AuthorPing Pipeline
 
 on:
-  workflow_dispatch: # Allows you to manually trigger this test from the GitHub Actions tab
+  workflow_dispatch:
   push:
     branches:
       - main
-      - test-ci # Optional: trigger on a test branch
+      - test-ci
 
 jobs:
-  # Scenario 1: Test Docker Build Failure & Source File Blame Routing
   test-docker-failure:
     runs-on: ubuntu-latest
     steps:
@@ -31,7 +30,6 @@ jobs:
           FAILED_STEP_NAME: 'Build Docker Image'
           ERROR_LOGS: "Error: failed to solve: process '/bin/sh -c npm run build' did not complete successfully"
 
-  # Scenario 2: Test Infrastructure / Network Error Regex Routing
   test-infra-failure:
     runs-on: ubuntu-latest
     steps:
