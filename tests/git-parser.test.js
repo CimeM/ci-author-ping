@@ -46,4 +46,36 @@ describe('Git Parser (src/git-parser.js)', () => {
       expect.any(Object)
     );
   });
+
+  it('should fall through to the next blame source file when one cannot be resolved', () => {
+    execSync.mockImplementation((cmd) => {
+      // Fail only for the first pattern, succeed for the second
+      if (cmd.includes('missing-file.json')) {
+        throw new Error('file not found');
+      }
+      return 'Carol Coder|carol@company.com\n';
+    });
+
+    const rule = {
+      name: 'Docker Rule',
+      blame_source_files: ['missing-file.json', 'src/index.js']
+    };
+
+    const author = resolveCulprit(rule, 'Build Docker Image', '');
+
+    expect(author).toEqual({
+      name: 'Carol Coder',
+      email: 'carol@company.com'
+    });
+  });
+
+  it('should return a consistent unknown-author sentinel when the git command fails', () => {
+    execSync.mockImplementation(() => {
+      throw new Error('not a git repository');
+    });
+
+    const author = resolveCulprit(null, 'Standard Step', '');
+
+    expect(author.name).toBe('Unknown Author');
+  });
 });

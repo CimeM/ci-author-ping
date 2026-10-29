@@ -1,34 +1,30 @@
-# AuthorPing 🚀
+# AuthorPing
+
+GitHub Action that routes pipeline failure notifications based on **code authorship (git blame)** and **custom cascading rules** — so the right developer gets notified instead of whoever triggered the build.
 
 ![License: MIT](https://img.shields.io/badge/License-MIT-blue.svg)
-[![Tests](https://github.com/cimem/ci-blame-notifier/actions/workflows/test.yml/badge.svg)](https://github.com/cimem/ci-blame-notifier/actions/workflows/test.yml)
-[![Latest Release](https://img.shields.io/github/v/release/cimem/ci-blame-notifier)](https://github.com/cimem/ci-blame-notifier/releases)
+[![Tests](https://github.com/CimeM/AuthorPing/actions/workflows/test.yml/badge.svg)](https://github.com/CimeM/AuthorPing/actions/workflows/test.yml)
+[![Latest Release](https://img.shields.io/github/v/release/CimeM/AuthorPing)](https://github.com/CimeM/AuthorPing/releases)
 ![Node.js Version](https://img.shields.io/node/v20)
 
-An intelligent GitHub Action that routes pipeline failure notifications based on **code authorship (git blame)** and **custom cascading rules**, ensuring the right developer gets notified instead of blindly spamming whoever triggered the build.
+## Why
 
-## Why use AuthorPing?
-* **Smart Git Blame:** Automatically traces pipeline step failures to the real developer who wrote or touched the code.
-* **Cascading Failure Rules:** Prevent false blame (e.g., if a Docker build fails due to a broken dependency file, it looks up who modified `package.json` rather than blaming who wrote the Dockerfile 6 months ago).
-* **Infrastructure Routing:** Intercepts system or network errors and routes them straight to DevOps channels instead of developer inboxes.
-* **Graceful Fallbacks:** Falls back to team channels or fallback emails if an author can't be reached or is an automated bot.
+Blind CI notifications go to the person who happened to push. AuthorPing finds the actual author of the failed code and notifies them.
 
----
+- **Git blame:** attribute failures to the real developer.
+- **Cascading rules:** e.g. a Docker build failure caused by a broken dependency blames the dependency's author, not the Dockerfile author.
+- **Fallback routing:** unresolvable or bot-related failures go to a fallback channel.
 
-## How It Works
+## How it works
 
-When your pipeline fails, the action executes this flow:
-
-1. **Capture Failure Context:** Extracts the failed step name (e.g., `Build Docker Image`) and pulls the raw error logs from the GitHub Actions API for that step.
-2. **Evaluate Rules:** Scans your `.github/blame-rules.yml` file, testing error logs and step names against regex patterns (`match_error`, `match_step`).
-3. **Resolve the Target:** Static routes bypass git blame entirely; `blame_source_files` overrides the Dockerfile history and blames the source files that actually changed.
-4. **Dispatch:** Mentions the correct developer or routes to the specified fallback channel.
-
----
+1. Capture failure context (failed step + error logs).
+2. Evaluate rules in `.github/blame-rules.yml`.
+3. Resolve target (static routes bypass blame; `blame_source_files` overrides the blame scope).
+4. Dispatch notification.
 
 ## Usage
 
-Add this action as a post-failure step in your workflow file (e.g., `.github/workflows/ci.yml`):
+Add a post-failure step to your workflow:
 
 ```yaml
 name: CI Pipeline
@@ -53,7 +49,7 @@ jobs:
           fallback_contact: '#pipeline-alerts'
 ```
 
-### Action Inputs
+### Inputs
 
 | Input | Required | Default | Description |
 |---|---|---|---|
@@ -61,16 +57,13 @@ jobs:
 | `rules_file` | No | `.github/blame-rules.yml` | Path to custom rules configuration file |
 | `fallback_contact` | Yes | `#pipeline-alerts` | Default fallback email or Slack channel |
 
-> **Integration notes:**
-> - The failing step must run **after** `actions/checkout`.
-> - The notify step must use `if: failure()` (or `if: always()` if you also want to catch cancelled runs).
-> - `fallback_contact` is required and is used when no rule matches or the blamed author is an ignored bot.
+- Failing step must run **after** `actions/checkout`.
+- Notify step must use `if: failure()`.
+- `fallback_contact` is required.
 
----
+## Configuration
 
-## Configuration (`.github/blame-rules.yml`)
-
-Create a rules file in your repository to map error types and exceptions:
+`.github/blame-rules.yml`:
 
 ```yaml
 default_fallback_channel: "#pipeline-alerts"
@@ -88,11 +81,9 @@ rules:
       mode: "dynamic_code_author"
 ```
 
-See the full rules reference in the conversation notes / original spec for all supported keys.
+See the full rules reference for all supported keys.
 
----
-
-## Local Development & Testing
+## Local Development
 
 ```bash
 npm install
@@ -101,8 +92,6 @@ npm run lint        # Run ESLint
 node scripts/test-local.js   # Run the local failure simulation
 ```
 
----
-
 ## License
 
-MIT License
+MIT

@@ -14,10 +14,15 @@ function loadRules(configPath) {
   }
   try {
     const fileContents = fs.readFileSync(resolvedPath, 'utf8');
-    return yaml.load(fileContents);
+    const parsed = yaml.load(fileContents);
+    // An empty YAML file parses to null; fall back to safe defaults
+    if (!parsed || typeof parsed !== 'object') {
+      return { rules: [] };
+    }
+    return parsed;
   } catch (e) {
     console.error(`Error parsing rules file at ${resolvedPath}:`, e.message);
-    return { rules: [] };
+    return { default_fallback_channel: '#pipeline-alerts', ignore_authors: ['dependabot[bot]', 'github-actions[bot]'], rules: [] };
   }
 }
 

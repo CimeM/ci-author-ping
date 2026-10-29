@@ -38,4 +38,14 @@ rules:
     expect(config.default_fallback_channel).toBe('#pipeline-alerts');
     expect(config.rules).toEqual([]);
   });
+
+  it('should return safe defaults if the rules file is empty', () => {
+    fs.existsSync.mockReturnValue(true);
+    fs.readFileSync.mockReturnValue('');
+
+    const config = loadRules('.github/blame-rules.yml');
+
+    expect(config.default_fallback_channel).toBe('#pipeline-alerts');
+    expect(config.rules).toEqual([]);
+  });
 });

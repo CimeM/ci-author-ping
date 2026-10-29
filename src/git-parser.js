@@ -14,7 +14,7 @@ function getAuthorForPath(targetPath) {
     return { name, email };
   } catch (error) {
     console.error(`Git command failed for path ${targetPath}:`, error.message);
-    return { name: 'System / Unknown', email: 'fallback@example.com' };
+    return { name: 'Unknown Author', email: 'unknown@example.com' };
   }
 }
 

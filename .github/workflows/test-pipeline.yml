@@ -27,6 +27,9 @@ jobs:
         with:
           fallback_contact: '#pipeline-alerts'
           rules_file: '.github/blame-rules.yml'
+        env:
+          FAILED_STEP_NAME: 'Build Docker Image'
+          ERROR_LOGS: "Error: failed to solve: process '/bin/sh -c npm run build' did not complete successfully"
 
   # Scenario 2: Test Infrastructure / Network Error Regex Routing
   test-infra-failure:
@@ -47,3 +50,6 @@ jobs:
         with:
           fallback_contact: '#devops-escalations'
           rules_file: '.github/blame-rules.yml'
+        env:
+          FAILED_STEP_NAME: 'Connect to External Registry'
+          ERROR_LOGS: "Temporary failure in name resolution while connecting to registry.docker.io"

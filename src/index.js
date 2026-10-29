@@ -1,12 +1,14 @@
-const core = require('@actions/core');
 const { loadRules } = require('./config');
 const { resolveCulprit } = require('./git-parser');
 const { sendNotification } = require('./notifier');
 
 async function run() {
   try {
-    const rulesFile = core.getInput('rules_file') || '.github/blame-rules.yml';
-    const fallbackContact = core.getInput('fallback_contact') || '#pipeline-alerts';
+    const core = await import('@actions/core');
+    const { getInput, setFailed } = core;
+
+    const rulesFile = getInput('rules_file') || '.github/blame-rules.yml';
+    const fallbackContact = getInput('fallback_contact') || '#pipeline-alerts';
     
     // Read environment or action context
     const failedStepName = process.env.FAILED_STEP_NAME || 'Unknown Step';
@@ -48,8 +50,12 @@ async function run() {
       target = resolveCulprit(matchedRule, failedStepName, errorLogs);
     }
 
-    // Filter ignored bots
-    if (config.ignore_authors && config.ignore_authors.includes(target.name)) {
+    // Filter ignored bots (compare against both author name and email)
+    const ignoredAuthors = config.ignore_authors || [];
+    const isIgnored = ignoredAuthors.some(
+      (author) => author === target.name || author === target.email
+    );
+    if (isIgnored) {
       console.log(`Blamed author ${target.name} is in ignore list. Falling back to default channel.`);
       target = { name: 'Fallback Team', email: fallbackContact };
     }
@@ -59,7 +65,7 @@ async function run() {
     await sendNotification(target, matchedRule?.route_to, fallbackContact, reason);
 
   } catch (error) {
-    core.setFailed(`CI Blame Notifier failed with error: ${error.message}`);
+    setFailed(`CI Blame Notifier failed with error: ${error.message}`);
   }
 }
 

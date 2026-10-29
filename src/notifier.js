@@ -1,6 +1,9 @@
-const fetch = require('node-fetch');
-
 async function sendNotification(target, routeConfig, fallbackContact, reason) {
+  const core = await import('@actions/core');
+  const { getInput } = core;
+  const fetchModule = await import('node-fetch');
+  const fetch = fetchModule.default ?? fetchModule;
+
   const destination = routeConfig?.slack_channel || routeConfig?.email || fallbackContact;
   
   const payload = {
@@ -10,15 +13,15 @@ async function sendNotification(target, routeConfig, fallbackContact, reason) {
   console.log(`\n[Notifier] Dispatching notification...`);
   console.log(JSON.stringify(payload, null, 2));
 
-  // If a real Slack Webhook URL is provided, send it out
-  const webhookUrl = process.env.SLACK_WEBHOOK_URL;
+  // Read the webhook from the action input (runner exposes it as INPUT_<NAME>)
+  const webhookUrl = getInput('slack_webhook_url');
   if (webhookUrl) {
     try {
       const response = await fetch(webhookUrl, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify(payload),
-        timeout: 5000
+        signal: AbortSignal.timeout(5000)
       });
       if (!response.ok) throw new Error(`Slack API error: ${response.statusText}`);
       console.log('[Notifier] Successfully sent notification to Slack!');
