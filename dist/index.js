@@ -23076,14 +23076,32 @@ function resolveCulprit(rule, failedStepName, errorLogs) {
 }
 
 // src/notifier.js
-async function sendNotification(target, routeConfig, fallbackContact, reason) {
-  const destination = routeConfig?.slack_channel || routeConfig?.email || fallbackContact;
-  const payload = {
-    text: `\u{1F6A8} *Pipeline Failure Alert*
-> *Reason:* ${reason}
-> *Blamed Author / Route:* *${target.name}* (${target.email})
-> *Dispatched To:* ${destination}`
-  };
+function getOptionalEnv(name, fallback = "") {
+  const value = process.env[name];
+  const trimmed = value ? value.trim() : "";
+  return trimmed || fallback;
+}
+function buildRunUrl() {
+  const runId = getOptionalEnv("GITHUB_RUN_ID");
+  if (!runId) return "";
+  const serverUrl = getOptionalEnv("GITHUB_SERVER_URL", "https://github.com");
+  const repo = getOptionalEnv("GITHUB_REPOSITORY");
+  const repoPart = repo ? `${repo}/` : "";
+  return `${serverUrl}/${repoPart}actions/runs/${runId}`;
+}
+async function sendNotification(target, routeConfig, fallbackContact, reason, slackUser) {
+  const destination = slackUser || routeConfig?.slack_channel || routeConfig?.email || fallbackContact;
+  const pipelineName = getOptionalEnv("GITHUB_PIPELINE_NAME") || getOptionalEnv("GITHUB_WORKFLOW");
+  const actionName = getOptionalEnv("FAILED_STEP_NAME");
+  const runUrl = buildRunUrl();
+  const lines = ["\u{1F6A8} *Pipeline Failure Alert*"];
+  if (pipelineName) lines.push(`> *Pipeline:* ${pipelineName}`);
+  if (actionName) lines.push(`> *Action:* ${actionName}`);
+  lines.push(`> *Reason:* ${reason}`);
+  lines.push(`> *Blamed Author / Route:* *${target.name}* (${target.email})`);
+  lines.push(`> *Dispatched To:* ${slackUser ? `<@${slackUser}>` : destination}`);
+  const text = runUrl ? [...lines, `> *Failed Run:* ${runUrl}`].join("\n") : lines.join("\n");
+  const payload = { text };
   console.log(`
 [Notifier] Dispatching notification...`);
   console.log(JSON.stringify(payload, null, 2));
@@ -23115,7 +23133,8 @@ async function run() {
     console.log(`[AuthorPing] Analyzing failure for step: "${failedStep}"`);
     const config = loadRules(rulesFile);
     const culprit = resolveCulprit(null, failedStep, errorLogs);
-    await sendNotification(culprit, null, fallbackContact, failedStep);
+    const slackUser = config.slack_user_map?.[culprit.name] || config.slack_user_map?.[culprit.email];
+    await sendNotification(culprit, null, fallbackContact, failedStep, slackUser);
     console.log("[AuthorPing] Routing complete.");
   } catch (error2) {
     setFailed(`AuthorPing execution failed: ${error2.message}`);

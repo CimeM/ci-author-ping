@@ -1,20 +1,23 @@
 {
   "name": "authorping",
-  "version": "0.0.1",
+  "version": "0.0.2",
   "description": "Smart GitHub Action that routes CI pipeline failures using git blame and custom cascading rules.",
   "main": "src/index.js",
   "type": "module",
   "scripts": {
-   "test": "jest",
-  "lint": "eslint .",
-  "lint:fix": "eslint . --fix",
-  "build": "esbuild src/index.js --bundle --platform=node --target=node20 --format=esm --banner:js=\"import { createRequire } from 'module'; const require = createRequire(import.meta.url);\" --outfile=dist/index.js"},
+    "test": "jest",
+    "lint": "eslint .",
+    "lint:fix": "eslint . --fix",
+    "build": "esbuild src/index.js --bundle --platform=node --target=node20 --format=esm --banner:js=\"import { createRequire } from 'module'; const require = createRequire(import.meta.url);\" --outfile=dist/index.js"
+  },
   "dependencies": {
     "@actions/core": "3.0.1",
     "@actions/github": "^6.0.0",
     "js-yaml": "5.5.0"
   },
   "devDependencies": {
+    "@babel/core": "^8.0.10",
+    "@babel/preset-env": "^8.0.7",
     "@eslint/js": "^10.0.1",
     "esbuild": "^0.25.0",
     "eslint": "^10.13.0",

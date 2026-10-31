@@ -1,5 +1,5 @@
-const { sendNotification } = require('../src/notifier');
-const core = require('@actions/core/lib/core.js');
+import * as core from '@actions/core';
+import { sendNotification } from '../src/notifier';
 
 // Mock external modules
 jest.mock('@actions/core', () => ({

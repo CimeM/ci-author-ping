@@ -1,5 +1,5 @@
-const fs = require('fs');
-const { loadRules } = require('../src/config');
+import * as fs from 'fs';
+import { loadRules } from '../src/config';
 
 jest.mock('fs');
 

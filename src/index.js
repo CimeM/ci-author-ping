@@ -16,7 +16,9 @@ async function run() {
     const config = loadRules(rulesFile);
     const culprit = resolveCulprit(null, failedStep, errorLogs);
 
-    await sendNotification(culprit, null, fallbackContact, failedStep);
+    const slackUser = config.slack_user_map?.[culprit.name] || config.slack_user_map?.[culprit.email];
+
+    await sendNotification(culprit, null, fallbackContact, failedStep, slackUser);
     
     console.log('[AuthorPing] Routing complete.');
   } catch (error) {

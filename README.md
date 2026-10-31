@@ -61,6 +61,26 @@ jobs:
 - Notify step must use `if: failure()`.
 - `fallback_contact` is required.
 
+### Optional Pipeline Details
+
+The Slack alert can include the pipeline name, failed action, and a direct link to the failed run. These are read from (optionally supplied) GitHub env vars:
+
+- `GITHUB_PIPELINE_NAME` — pipeline name (falls back to GitHub's `GITHUB_WORKFLOW` when set).
+- `GITHUB_RUN_ID`, `GITHUB_REPOSITORY`, `GITHUB_SERVER_URL` — used to build the failed-run link.
+
+All of the above are optional; when they are not supplied, the alert simply omits those details.
+
+### Slack User Mapping
+
+You can map GitHub usernames (or author emails) to Slack user IDs so alerts go directly to a person instead of the fallback channel:
+
+```yaml
+slack_user_map:
+  "some-git-username": "U012ABCDEF"
+```
+
+When the resolved culprit matches a key, the alert is dispatched to that Slack user (`<@U012ABCDEF>` mention) instead of the fallback contact.
+
 ## Configuration
 
 `.github/blame-rules.yml`:

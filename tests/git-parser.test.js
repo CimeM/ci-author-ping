@@ -1,5 +1,5 @@
-const { execSync } = require('child_process');
-const { resolveCulprit } = require('../src/git-parser');
+import { execSync } from 'child_process';
+import { resolveCulprit } from '../src/git-parser';
 
 jest.mock('child_process', () => ({
   execSync: jest.fn()
