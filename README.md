@@ -1,6 +1,8 @@
 # AuthorPing
 
-GitHub Action that routes pipeline failure notifications based on **code authorship (git blame)** and **custom cascading rules** — so the right developer gets notified instead of whoever triggered the build.
+Route CI failure alerts to the developer who actually wrote the code, not whoever triggered the run. Using git blame and custom fallback rules, notifications go straight to the last contributor of the broken lines.
+
+GitHub Action that routes pipeline failure notifications based on **code authorship (git blame)** and **custom cascading rules**.
 
 [![Tests](https://github.com/CimeM/AuthorPing/actions/workflows/test.yml/badge.svg)](https://github.com/CimeM/AuthorPing/actions/workflows/test.yml)
 [![Latest Release](https://img.shields.io/github/v/release/CimeM/AuthorPing)](https://github.com/CimeM/AuthorPing/releases)
