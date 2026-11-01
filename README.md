@@ -2,16 +2,15 @@
 
 Route CI failure alerts to the developer who actually wrote the code, not whoever triggered the run. Using git blame and custom fallback rules, notifications go straight to the last contributor of the broken lines.
 
-GitHub Action that routes pipeline failure notifications based on **code authorship (git blame)** and **custom cascading rules**.
-
 [![Tests](https://github.com/CimeM/ci-author-ping/actions/workflows/test.yml/badge.svg)](https://github.com/CimeM/ci-author-ping/actions/workflows/test.yml)
+[![Latest Release](https://img.shields.io/github/v/release/CimeM/ci-author-ping?color=blue&label=latest%20tag)](https://github.com/CimeM/ci-author-ping/releases/latest)
 
 ## How it works
 
 1. Capture failure context in CI (failed step + error logs).
 2. Evaluate rules in `.github/alert-config.yml`.
 3. Resolve target (static routes bypass blame; `alert_source_files` overrides the alert scope).
-4. Dispatch notification.
+4. Dispatch notification to Slack.
 
 ## Usage
 

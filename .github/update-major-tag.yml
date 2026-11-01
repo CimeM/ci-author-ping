@@ -1,0 +1,30 @@
+name: Update Major Version Tag
+
+on:
+  push:
+    tags:
+      - 'v[0-9]*.[0-9]*.[0-9]*' # Matches v0.1.0, v1.0.0, etc., but NOT v0 or v1
+
+jobs:
+  update-tag:
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write # push and update git tags
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: Move major version tag
+        run: |
+          TAG="${{ github.ref_name }}"
+          MAJOR_VERSION=$(echo "$TAG" | cut -d. -f1)
+
+          echo "Tag pushed: $TAG. Updating major tag $MAJOR_VERSION..."
+
+          git config user.name "github-actions[bot]"
+          git config user.email "github-actions[bot]@users.noreply.github.com"
+
+          git tag -f "$MAJOR_VERSION" "$TAG"
+          git push origin "$MAJOR_VERSION" --force
