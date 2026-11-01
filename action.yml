@@ -4,6 +4,9 @@ inputs:
   slack_webhook_url:
     description: 'Slack Webhook URL for incoming alerts'
     required: false
+  slack_bot_token:
+    description: 'Slack Bot OAuth token (xoxb-...) used to DM the blamed author directly'
+    required: false
   rules_file:
     description: 'Path to custom rules configuration file'
     required: false

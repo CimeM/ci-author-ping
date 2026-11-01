@@ -79,7 +79,7 @@ slack_user_map:
   "some-git-username": "U012ABCDEF"
 ```
 
-When the resolved culprit matches a key, the alert is dispatched to that Slack user (`<@U012ABCDEF>` mention) instead of the fallback contact.
+When the resolved culprit matches a key, the alert is dispatched to that Slack user (`<@U012ABCDEF>` mention) instead of the fallback contact. A Slack bot token (`slack_bot_token`) is required for DM delivery via `chat.postMessage`; without it, the webhook/fallback is used.
 
 ## Configuration
 

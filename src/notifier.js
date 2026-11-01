@@ -1,5 +1,7 @@
 import * as core from '@actions/core';
 
+const SLACK_API_URL = 'https://slack.com/api';
+
 function getOptionalEnv(name, fallback = '') {
   const value = process.env[name];
   const trimmed = value ? value.trim() : '';
@@ -35,7 +37,25 @@ export async function sendNotification(target, routeConfig, fallbackContact, rea
   console.log(`\n[Notifier] Dispatching notification...`);
   console.log(JSON.stringify(payload, null, 2));
 
+  const botToken = core.getInput('slack_bot_token');
   const webhookUrl = core.getInput('slack_webhook_url');
+
+  if (slackUser && botToken) {
+    try {
+      const response = await fetch(`${SLACK_API_URL}/chat.postMessage`, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json', Authorization: `Bearer ${botToken}` },
+        body: JSON.stringify({ channel: slackUser, text })
+      });
+      const data = await response.json();
+      if (!response.ok || !data.ok) throw new Error(`Slack API error: ${data.error || response.statusText}`);
+      console.log('[Notifier] Successfully sent DM notification to Slack!');
+    } catch (err) {
+      console.error('[Notifier] Failed to send Slack DM notification:', err.message);
+    }
+    return;
+  }
+
   if (webhookUrl) {
     try {
       const response = await fetch(webhookUrl, {

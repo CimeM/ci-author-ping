@@ -52,4 +52,24 @@ describe('Notifier (src/notifier.js)', () => {
       expect.stringContaining('Successfully sent notification to Slack!')
     );
   });
+
+  it('should send a direct message via chat.postMessage when a Slack user is resolved', async () => {
+    core.getInput.mockReturnValue('xoxb-test-token');
+    global.fetch.mockResolvedValue({ ok: true, json: async () => ({ ok: true }) });
+
+    const target = { name: 'Alice', email: 'alice@company.com' };
+    await sendNotification(target, null, '#pipeline-alerts', 'Test Failure', 'U0SLACKUSER123');
+
+    expect(global.fetch).toHaveBeenCalledWith(
+      'https://slack.com/api/chat.postMessage',
+      expect.objectContaining({
+        method: 'POST',
+        headers: expect.objectContaining({ Authorization: 'Bearer xoxb-test-token' }),
+        body: expect.any(String)
+      })
+    );
+    expect(consoleLogSpy).toHaveBeenCalledWith(
+      expect.stringContaining('Successfully sent DM notification to Slack!')
+    );
+  });
 });
