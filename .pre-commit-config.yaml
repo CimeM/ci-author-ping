@@ -1,0 +1,10 @@
+repos:
+  - repo: local
+    hooks:
+      - id: zizmor
+        name: zizmor
+        description: Lint GitHub Actions workflows and actions with zizmor
+        entry: zizmor --no-progress
+        language: system
+        files: ^(\.github/workflows/|action\.yml|\.github/dependabot/|^\.pre-commit-config\.yaml)
+        pass_filenames: true

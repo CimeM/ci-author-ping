@@ -2,7 +2,6 @@
 
 GitHub Action that routes pipeline failure notifications based on **code authorship (git blame)** and **custom cascading rules** — so the right developer gets notified instead of whoever triggered the build.
 
-![License: MIT](https://img.shields.io/badge/License-MIT-blue.svg)
 [![Tests](https://github.com/CimeM/AuthorPing/actions/workflows/test.yml/badge.svg)](https://github.com/CimeM/AuthorPing/actions/workflows/test.yml)
 [![Latest Release](https://img.shields.io/github/v/release/CimeM/AuthorPing)](https://github.com/CimeM/AuthorPing/releases)
 ![Node.js Version](https://img.shields.io/node/v20)
@@ -111,6 +110,18 @@ npm test            # Run Jest unit tests
 npm run lint        # Run ESLint
 node scripts/test-local.js   # Run the local failure simulation
 ```
+
+### Pre-commit hooks (zizmor)
+
+Git hooks are managed with [prek](https://github.com/j178/prek) and lint GitHub
+Actions workflows via [zizmor](https://github.com/woodruffw/zizmor).
+
+```bash
+brew install zizmor   # or: cargo install zizmor
+prek install           # Install the git pre-commit hook
+prek run --all-files  # Run all pre-commit hooks
+```
+
 
 ## License
 

@@ -8,13 +8,14 @@ module.exports = [
   {
     languageOptions: {
       ecmaVersion: 2022,
-      sourceType: 'commonjs',
+      sourceType: 'module',
       globals: {
         require: 'readonly',
         module: 'readonly',
         exports: 'readonly',
         process: 'readonly',
         console: 'readonly',
+        fetch: 'readonly',
       },
     },
   },
@@ -42,6 +43,7 @@ module.exports = [
         beforeEach: 'readonly',
         afterEach: 'readonly',
         jest: 'readonly',
+        global: 'readonly',
       },
     },
   },

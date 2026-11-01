@@ -7,12 +7,17 @@ on:
       - main
       - test-ci
 
+permissions:
+  contents: read
+
 jobs:
   test-docker-failure:
     runs-on: ubuntu-26.04
     steps:
       - name: Checkout Repository
         uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          persist-credentials: false
 
       - name: Build Docker Image
         run: |
@@ -22,7 +27,7 @@ jobs:
 
       - name: Run AuthorPing (On Failure)
         if: failure()
-        uses: ./
+        uses: $/
         with:
           fallback_contact: '#pipeline-alerts'
           rules_file: '.github/blame-rules.yml'
@@ -35,6 +40,8 @@ jobs:
     steps:
       - name: Checkout Repository
         uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          persist-credentials: false
 
       - name: Connect to External Registry
         run: |
@@ -44,7 +51,7 @@ jobs:
 
       - name: Run AuthorPing (On Failure)
         if: failure()
-        uses: ./
+        uses: $/
         with:
           fallback_contact: '#devops-escalations'
           rules_file: '.github/blame-rules.yml'
