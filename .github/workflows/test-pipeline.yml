@@ -1,4 +1,4 @@
-name: Test AuthorPing Pipeline
+name: Test ci-author-ping Pipeline
 
 on:
   workflow_dispatch:
@@ -25,7 +25,7 @@ jobs:
           echo "Error: failed to solve: process '/bin/sh -c npm run build' did not complete successfully"
           exit 1
 
-      - name: Run AuthorPing (On Failure)
+      - name: Run ci-author-ping (On Failure)
         if: failure()
         uses: $/
         with:
@@ -49,7 +49,7 @@ jobs:
           echo "Temporary failure in name resolution while connecting to registry.docker.io"
           exit 1
 
-      - name: Run AuthorPing (On Failure)
+      - name: Run ci-author-ping (On Failure)
         if: failure()
         uses: $/
         with:

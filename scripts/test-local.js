@@ -10,7 +10,7 @@ const { resolveCulprit } = require('../src/git-parser');
 const { sendNotification } = require('../src/notifier');
 
 async function testLocal() {
-  console.log("=== Running AuthorPing Local Test ===");
+  console.log("=== Running ci-author-ping Local Test ===");
   const config = loadRules('.github/blame-rules.yml');
   
   const failedStep = process.env.FAILED_STEP_NAME;

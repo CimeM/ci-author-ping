@@ -1,5 +1,5 @@
 {
-  "name": "authorping",
+  "name": "ci-author-ping",
   "version": "0.0.2",
   "description": "Smart GitHub Action that routes CI pipeline failures using git blame and custom cascading rules.",
   "main": "src/index.js",

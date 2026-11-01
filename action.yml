@@ -1,4 +1,4 @@
-name: 'AuthorPing'
+name: 'ci-author-ping'
 description: 'Smart CI failure router using git blame and custom rules mapping.'
 inputs:
   slack_webhook_url:

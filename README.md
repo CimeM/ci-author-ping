@@ -1,16 +1,16 @@
-# AuthorPing
+# ci-author-ping
 
 Route CI failure alerts to the developer who actually wrote the code, not whoever triggered the run. Using git blame and custom fallback rules, notifications go straight to the last contributor of the broken lines.
 
 GitHub Action that routes pipeline failure notifications based on **code authorship (git blame)** and **custom cascading rules**.
 
-[![Tests](https://github.com/CimeM/AuthorPing/actions/workflows/test.yml/badge.svg)](https://github.com/CimeM/AuthorPing/actions/workflows/test.yml)
-[![Latest Release](https://img.shields.io/github/v/release/CimeM/AuthorPing)](https://github.com/CimeM/AuthorPing/releases)
+[![Tests](https://github.com/CimeM/ci-author-ping/actions/workflows/test.yml/badge.svg)](https://github.com/CimeM/ci-author-ping/actions/workflows/test.yml)
+[![Latest Release](https://img.shields.io/github/v/release/CimeM/ci-author-ping)](https://github.com/CimeM/ci-author-ping/releases)
 ![Node.js Version](https://img.shields.io/node/v20)
 
 ## Why
 
-Blind CI notifications go to the person who happened to push. AuthorPing finds the actual author of the failed code and notifies them.
+Blind CI notifications go to the person who happened to push. ci-author-ping finds the actual author of the failed code and notifies them.
 
 - **Git blame:** attribute failures to the real developer.
 - **Cascading rules:** e.g. a Docker build failure caused by a broken dependency blames the dependency's author, not the Dockerfile author.

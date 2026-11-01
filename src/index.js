@@ -11,7 +11,7 @@ async function run() {
     const failedStep = process.env.FAILED_STEP_NAME || 'Unknown Step';
     const errorLogs = process.env.ERROR_LOGS || '';
 
-    console.log(`[AuthorPing] Analyzing failure for step: "${failedStep}"`);
+    console.log(`[ci-author-ping] Analyzing failure for step: "${failedStep}"`);
 
     const config = loadRules(rulesFile);
     const culprit = resolveCulprit(null, failedStep, errorLogs);
@@ -20,9 +20,9 @@ async function run() {
 
     await sendNotification(culprit, null, fallbackContact, failedStep, slackUser);
     
-    console.log('[AuthorPing] Routing complete.');
+    console.log('[ci-author-ping] Routing complete.');
   } catch (error) {
-    core.setFailed(`AuthorPing execution failed: ${error.message}`);
+    core.setFailed(`ci-author-ping execution failed: ${error.message}`);
   }
 }
 

@@ -1,4 +1,4 @@
-# Contributing to AuthorPing
+# Contributing to ci-author-ping
 
 Thanks for your interest in contributing!
 
@@ -6,7 +6,7 @@ Thanks for your interest in contributing!
 
 ```bash
 git clone <repository-url>
-cd authorping
+cd ci-author-ping
 npm install
 npm test            # Run Jest unit tests
 npm run lint        # Run ESLint
