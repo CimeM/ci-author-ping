@@ -20,13 +20,15 @@ jobs:
           persist-credentials: false
 
       - name: Build Docker Image
+        id: simulate_build_failure
+        continue-on-error: true
         run: |
           echo "Simulating a docker build failure..."
           echo "Error: failed to solve: process '/bin/sh -c npm run build' did not complete successfully"
           exit 1
 
       - name: Run ci-author-ping (On Failure)
-        if: failure()
+        if: steps.simulate_build_failure.outcome == 'failure'
         uses: $/
         with:
           fallback_contact: '#pipeline-alerts'
@@ -44,13 +46,15 @@ jobs:
           persist-credentials: false
 
       - name: Connect to External Registry
+        id: simulate_infra_failure
+        continue-on-error: true
         run: |
           echo "Attempting to pull base image..."
           echo "Temporary failure in name resolution while connecting to registry.docker.io"
           exit 1
 
       - name: Run ci-author-ping (On Failure)
-        if: failure()
+        if: steps.simulate_infra_failure.outcome == 'failure'
         uses: $/
         with:
           fallback_contact: '#devops-escalations'
