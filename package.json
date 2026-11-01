@@ -19,7 +19,7 @@
     "@babel/core": "^8.0.10",
     "@babel/preset-env": "^8.0.7",
     "@eslint/js": "^10.0.1",
-    "esbuild": "^0.25.0",
+    "esbuild": "^0.28.2",
     "eslint": "^10.13.0",
     "jest": "^25.1.0"
   },
