@@ -32,7 +32,7 @@ jobs:
         uses: $/
         with:
           fallback_contact: '#pipeline-alerts'
-          rules_file: '.github/blame-rules.yml'
+          rules_file: '.github/alert-config.yml'
         env:
           FAILED_STEP_NAME: 'Build Docker Image'
           ERROR_LOGS: "Error: failed to solve: process '/bin/sh -c npm run build' did not complete successfully"
@@ -58,7 +58,7 @@ jobs:
         uses: $/
         with:
           fallback_contact: '#devops-escalations'
-          rules_file: '.github/blame-rules.yml'
+          rules_file: '.github/alert-config.yml'
         env:
           FAILED_STEP_NAME: 'Connect to External Registry'
           ERROR_LOGS: "Temporary failure in name resolution while connecting to registry.docker.io"

@@ -10,7 +10,7 @@ inputs:
   rules_file:
     description: 'Path to custom rules configuration file'
     required: false
-    default: '.github/blame-rules.yml'
+    default: '.github/alert-config.yml'
   fallback_contact:
     description: 'Default fallback email or Slack channel'
     required: true

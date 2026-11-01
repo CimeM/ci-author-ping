@@ -23143,7 +23143,7 @@ async function sendNotification(target, routeConfig, fallbackContact, reason, sl
 // src/index.js
 async function run() {
   try {
-    const rulesFile = getInput("rules_file") || ".github/blame-rules.yml";
+    const rulesFile = getInput("rules_file") || ".github/alert-config.yml";
     const fallbackContact = getInput("fallback_contact") || "#pipeline-alerts";
     const failedStep = process.env.FAILED_STEP_NAME || "Unknown Step";
     const errorLogs = process.env.ERROR_LOGS || "";

@@ -1,7 +1,7 @@
 // Local test harness
 process.env.FAILED_STEP_NAME = process.env.FAILED_STEP_NAME || "Build Docker Image";
 process.env.ERROR_LOGS = process.env.ERROR_LOGS || "Step failed during docker build layer compilation";
-process.env.INPUT_RULES_FILE = process.env.INPUT_RULES_FILE || ".github/blame-rules.yml";
+process.env.INPUT_RULES_FILE = process.env.INPUT_RULES_FILE || ".github/alert-config.yml";
 process.env.INPUT_FALLBACK_CONTACT = process.env.INPUT_FALLBACK_CONTACT || "#devops-escalations";
 
 // Mock core functions if running standalone
@@ -11,7 +11,7 @@ const { sendNotification } = require('../src/notifier');
 
 async function testLocal() {
   console.log("=== Running ci-author-ping Local Test ===");
-  const config = loadRules('.github/blame-rules.yml');
+  const config = loadRules('.github/alert-config.yml');
   
   const failedStep = process.env.FAILED_STEP_NAME;
   console.log(`Simulated Failed Step: ${failedStep}`);

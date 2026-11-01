@@ -5,7 +5,7 @@ import { sendNotification } from './notifier.js';
 
 async function run() {
   try {
-    const rulesFile = core.getInput('rules_file') || '.github/blame-rules.yml';
+    const rulesFile = core.getInput('rules_file') || '.github/alert-config.yml';
     const fallbackContact = core.getInput('fallback_contact') || '#pipeline-alerts';
     
     const failedStep = process.env.FAILED_STEP_NAME || 'Unknown Step';

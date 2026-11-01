@@ -5,22 +5,12 @@ Route CI failure alerts to the developer who actually wrote the code, not whoeve
 GitHub Action that routes pipeline failure notifications based on **code authorship (git blame)** and **custom cascading rules**.
 
 [![Tests](https://github.com/CimeM/ci-author-ping/actions/workflows/test.yml/badge.svg)](https://github.com/CimeM/ci-author-ping/actions/workflows/test.yml)
-[![Latest Release](https://img.shields.io/github/v/release/CimeM/ci-author-ping)](https://github.com/CimeM/ci-author-ping/releases)
-![Node.js Version](https://img.shields.io/node/v20)
-
-## Why
-
-Blind CI notifications go to the person who happened to push. ci-author-ping finds the actual author of the failed code and notifies them.
-
-- **Git blame:** attribute failures to the real developer.
-- **Cascading rules:** e.g. a Docker build failure caused by a broken dependency blames the dependency's author, not the Dockerfile author.
-- **Fallback routing:** unresolvable or bot-related failures go to a fallback channel.
 
 ## How it works
 
-1. Capture failure context (failed step + error logs).
-2. Evaluate rules in `.github/blame-rules.yml`.
-3. Resolve target (static routes bypass blame; `blame_source_files` overrides the blame scope).
+1. Capture failure context in CI (failed step + error logs).
+2. Evaluate rules in `.github/alert-config.yml`.
+3. Resolve target (static routes bypass blame; `alert_source_files` overrides the alert scope).
 4. Dispatch notification.
 
 ## Usage
@@ -41,12 +31,12 @@ jobs:
       - name: Build Docker Image
         run: docker build -t my-app .
 
-      - name: Notify Blamed Author on Failure
+      - name: Notify Author on Failure
         if: failure()
-        uses: cimem/ci-blame-notifier@v1
+        uses: cimem/ci-author-ping@v0.0.3
         with:
           slack_webhook_url: ${{ secrets.SLACK_WEBHOOK_URL }}
-          rules_file: '.github/blame-rules.yml'
+          rules_file: '.github/alert-config.yml'
           fallback_contact: '#pipeline-alerts'
 ```
 
@@ -55,7 +45,7 @@ jobs:
 | Input | Required | Default | Description |
 |---|---|---|---|
 | `slack_webhook_url` | No | — | Slack Webhook URL for incoming alerts |
-| `rules_file` | No | `.github/blame-rules.yml` | Path to custom rules configuration file |
+| `rules_file` | No | `.github/alert-config.yml` | Path to custom rules configuration file |
 | `fallback_contact` | Yes | `#pipeline-alerts` | Default fallback email or Slack channel |
 
 - Failing step must run **after** `actions/checkout`.
@@ -84,7 +74,7 @@ When the resolved culprit matches a key, the alert is dispatched to that Slack u
 
 ## Configuration
 
-`.github/blame-rules.yml`:
+`.github/alert-config.yml`:
 
 ```yaml
 default_fallback_channel: "#pipeline-alerts"

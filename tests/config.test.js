@@ -21,7 +21,7 @@ rules:
     fs.existsSync.mockReturnValue(true);
     fs.readFileSync.mockReturnValue(mockYaml);
 
-    const config = loadRules('.github/blame-rules.yml');
+    const config = loadRules('.github/alert-config.yml');
     
     expect(config.default_fallback_channel).toBe('#custom-alerts');
     expect(config.ignore_authors).toContain('bot');
@@ -43,7 +43,7 @@ rules:
     fs.existsSync.mockReturnValue(true);
     fs.readFileSync.mockReturnValue('INVALID: [yaml: content');
 
-    const config = loadRules('.github/blame-rules.yml');
+    const config = loadRules('.github/alert-config.yml');
 
     expect(config.rules).toEqual([]);
     consoleErrorSpy.mockRestore();
